@@ -2,7 +2,7 @@
   "name": "betting-game-be",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon sever.js"
@@ -19,8 +19,10 @@
   },
   "homepage": "https://github.com/AmirAshlag/betting-game-be#readme",
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mysql": "^2.18.1",
+    "mongoose": "^6.9.0",
     "nodejs": "^0.0.0",
     "nodemon": "^2.0.20"
   }
