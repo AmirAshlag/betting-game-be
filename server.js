@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/users', userRouter);
+
 mongoose.set('strictQuery', true);
 mongoose.connection.on('error', (err) => console.error(err));
 mongoose.connection.once('open', () => console.log('Connected to MongoDB'));
