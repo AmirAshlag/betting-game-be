@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config(); // loads the .env file on the project's root - later available on process.env
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -14,9 +14,7 @@ app.use('/users', userRouter);
 mongoose.set('strictQuery', true);
 mongoose.connection.on('error', (err) => console.error(err));
 mongoose.connection.once('open', () => console.log('Connected to MongoDB'));
-mongoose.connect(
-  'mongodb+srv://admin:admin@cluster0.ygfekoj.mongodb.net/?retryWrites=true&w=majority'
-);
+mongoose.connect(process.env.MONGO_URI);
 
 app.listen('8080', () => {
   console.log('listening on port 8080');
