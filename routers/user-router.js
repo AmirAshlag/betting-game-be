@@ -7,6 +7,5 @@ const userRouter = Router();
 userRouter.get('/', userController.getAllUsers);
 userRouter.post('/login', userController.login);
 userRouter.post('/signup', userController.signup);
-// userRouter.post('/:email/add-player', userController.addPlayer);
 
 module.exports = { userRouter };
