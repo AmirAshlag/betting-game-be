@@ -18,9 +18,15 @@ function getUsers(filter = {}) {
   return User.find(filter).select('-password');
 }
 
+async function updateCoins(userId, coins) {
+  // userId, coins -> puts the coins instead of the current user coins
+  return User.findByIdAndUpdate(userId, { coins });
+}
+
 module.exports = {
   createUser,
   getUsers,
   getUserByEmail,
   getUserById,
+  updateCoins,
 };

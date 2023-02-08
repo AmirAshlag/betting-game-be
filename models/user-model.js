@@ -14,6 +14,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  /**
+   * total coins of users
+   */
   coins: {
     type: Number,
     default: 1000, // if a new record is created without coins, defaults to 1000

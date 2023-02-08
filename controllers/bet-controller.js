@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const betDal = require('../dal/bet-dal');
+const userDal = require('../dal/user-dal');
 // const fs = require('fs');
 // const path = require('path');
 const bcrypt = require('bcrypt');
@@ -10,7 +11,19 @@ const bcrypt = require('bcrypt');
 async function createNewBet(req, res) {
   try {
     const bet = req.body;
-    const newBet = await betDal.createNewBet(...bet, betAmount);
+    // get the user's coins
+    const coins = (await userDal.getUserById(bet.userId)).coins;
+
+    // check that user have enough coins
+    if (coins < bet.amount) {
+      res.status(400).json({ message: 'Not enough coins for this amount' });
+      return;
+    }
+    // subtract the amount of coins from the user (updating the user balance)
+    const updatedCoins = coins - bet.amount;
+    await userDal.updateCoins(bet.userId, updatedCoins);
+    // create a new bet
+    const newBet = await betDal.createNewBet(bet);
     res.json(newBet);
   } catch (err) {
     console.log(err);

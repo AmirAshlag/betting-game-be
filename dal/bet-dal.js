@@ -1,6 +1,6 @@
 const { Bet } = require('../models/bet-model');
 
-async function createBet(bet) {
+async function createNewBet(bet) {
   const newBet = await Bet.create(bet);
   return newBet;
 }
@@ -10,6 +10,6 @@ function getBets(filter = {}) {
 }
 
 module.exports = {
-  createBet,
+  createNewBet,
   getBets,
 };
