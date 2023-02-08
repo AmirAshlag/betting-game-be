@@ -16,7 +16,7 @@ const betSchema = new mongoose.Schema({
     // enforces that the type will be a string from this array
     enum: ['3 point shots', 'game score', 'rebound', 'game score against user'],
   },
-  /**
+  /** 
    * height of the bet
    */
   amount: {

@@ -31,17 +31,13 @@ function validateUserData(user) {
 async function signup(req, res) {
   try {
     const user = req.body;
-    const validationErrorMessage = validateUserData(user);
-    if (validationErrorMessage) {
-      return res.status(400).send({ message: validationErrorMessage });
-    }
     const isUserExist = await userDal.getUserByEmail(user.email);
     if (isUserExist) {
       return res.status(400).send({ message: 'Email already exist' });
     }
 
     console.log(req.body.password);
-    const hashedPassword = await bcrypt.hash(req.body.password, 8);
+    const hashedPassword = await bcrypt.hash(`${req.body.password}`, 8);
     const newUser = await userDal.createUser({
       email: user.email,
       password: hashedPassword,
@@ -56,12 +52,7 @@ async function signup(req, res) {
 const invalidMessage = 'Invalid Email or Password';
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    if (!password || !email) {
-      return res.status(400).send({ message: 'Some fields are missing' });
-    }
-
+    const { email, password } = req.body
     const user = await userDal.getUserByEmail(email);
     console.log(user);
 

@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const { userRouter } = require('./routers/user-router');
 const { betRouter } = require('./routers/bet-router');
+const { gameRouter } = require('./routers/game-router');
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use('/users', userRouter);
 app.use('/bets', betRouter);
+app.use('/games', gameRouter)
 
 mongoose.set('strictQuery', true);
 mongoose.connection.on('error', (err) => console.error(err));
