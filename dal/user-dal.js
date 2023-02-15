@@ -10,8 +10,12 @@ async function getUserByEmail(email) {
   return user;
 }
 
+async function getUserByCoins(coins) {
+  const user = await User.findOne({ coins });
+}
+
 async function getUserById(userId) {
-  return User.findById(userId).select('-password');
+  return User.findById(userId).select('coins');
 }
 
 function getUsers(filter = {}) {
@@ -22,15 +26,12 @@ async function updateCoins(userId, coins) {
   // userId, coins -> puts the coins instead of the current user coins
   return User.findByIdAndUpdate(userId, { coins });
 }
-async function getUserCoinsById(userId, coins) {
-  return User.findById(userId);
-}
 
 module.exports = {
   createUser,
   getUsers,
   getUserByEmail,
+  getUserByCoins,
   getUserById,
   updateCoins,
-  getUserCoinsById,
 };

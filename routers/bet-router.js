@@ -5,7 +5,6 @@ const betRouter = Router();
 // const { requireLogin } = require('../middleware/require-login');
 
 betRouter.get('/', betController.getAllBets);
-// betRouter.get('/betsHistory', betController.betsHistory);
 
 betRouter.post('/', betController.createNewBet);
 
