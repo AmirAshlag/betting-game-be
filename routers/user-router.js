@@ -5,6 +5,7 @@ const userRouter = Router();
 // const { requireLogin } = require('../middleware/require-login');
 
 userRouter.get('/', userController.getAllUsers);
+userRouter.post('/"/user/:userId"', userController.getUserCoinsById);
 userRouter.post('/login', userController.login);
 userRouter.post('/signup', userController.signup);
 

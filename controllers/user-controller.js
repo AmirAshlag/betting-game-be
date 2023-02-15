@@ -52,7 +52,7 @@ async function signup(req, res) {
 const invalidMessage = 'Invalid Email or Password';
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body
+    const { email, password } = req.body;
     const user = await userDal.getUserByEmail(email);
     console.log(user);
 
@@ -90,10 +90,23 @@ async function getAllUsers(req, res) {
   }
 }
 
+async function getUserCoinsById(req, res) {
+  try {
+    const userCoins = req.body;
+    console.log(req.body);
+    // get the user's coins
+    const coins = (await userDal.getUserCoinsById(userCoins.userId)).coins;
+    res.json({ coins });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+}
+
 const userController = {
   signup,
   login,
   getAllUsers,
+  getUserCoinsById,
 };
 
 module.exports = userController;

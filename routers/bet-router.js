@@ -6,7 +6,6 @@ const betRouter = Router();
 
 betRouter.get('/', betController.getAllBets);
 // betRouter.get('/betsHistory', betController.betsHistory);
-// betRouter.get('/totalCoins', betController.totalCoins);
 
 betRouter.post('/', betController.createNewBet);
 
