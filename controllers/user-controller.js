@@ -90,13 +90,11 @@ async function getAllUsers(req, res) {
   }
 }
 
-async function getUserCoinsById(req, res) {
+async function getUserByCoins(req, res) {
   try {
-    const userCoins = req.body;
-    console.log(req.body);
-    // get the user's coins
-    const coins = (await userDal.getUserCoinsById(userCoins.userId)).coins;
-    res.json({ coins });
+    const id = req.params.coinsId;
+    const user = await userDal.getUserById(id);
+    res.send(user);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -106,7 +104,7 @@ const userController = {
   signup,
   login,
   getAllUsers,
-  getUserCoinsById,
+  getUserByCoins,
 };
 
 module.exports = userController;
