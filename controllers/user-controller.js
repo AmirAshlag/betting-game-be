@@ -100,11 +100,18 @@ async function getUserByCoins(req, res) {
   }
 }
 
+function Logout(req, res) {
+  res.cookie('jwt', {}, { expires: new Date(Date.now() + 1), httpOnly: true });
+  res.send({ approved: 'loggedOut' });
+  console.log('cookie deleted');
+}
+
 const userController = {
   signup,
   login,
   getAllUsers,
   getUserByCoins,
+  Logout
 };
 
 module.exports = userController;

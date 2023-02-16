@@ -36,8 +36,6 @@ function getGamesByDate(req,res){
          today = yyyy + '-' + mm + '-' + dd;
     }
 
-    const axios = require('axios');
-
     const options = {
       method: 'GET',
       url: 'https://api-nba-v1.p.rapidapi.com/games',
