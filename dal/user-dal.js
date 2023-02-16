@@ -5,11 +5,6 @@ async function createUser(user) {
   return User.findOne({ email: user.email }).select('-password');
 }
 
-async function getUserByEmail(email) {
-  const user = await User.findOne({ email });
-  return user;
-}
-
 async function getUserByCoins(coins) {
   const user = await User.findOne({ coins });
 }
@@ -27,11 +22,15 @@ async function updateCoins(userId, coins) {
   return User.findByIdAndUpdate(userId, { coins });
 }
 
+async function getUserByEmail(email){
+   return User.find({email: email});
+}
+
 module.exports = {
   createUser,
   getUsers,
-  getUserByEmail,
   getUserByCoins,
   getUserById,
   updateCoins,
+  getUserByEmail,
 };

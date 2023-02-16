@@ -50,32 +50,28 @@ async function signup(req, res) {
 }
 
 const invalidMessage = 'Invalid Email or Password';
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userDal.getUserByEmail(email);
-    console.log(user);
+    console.log(user[0]);
 
     if (!user) {
       return res.status(400).send({ message: invalidMessage });
     }
 
-    const passwordIsValid = await bcrypt.compare(password, user.password);
+    const passwordIsValid = await bcrypt.compare(`${password}`, user[0].password);
 
     if (!passwordIsValid) {
       return res.status(400).send({ message: invalidMessage });
     }
-    const userData = {
-      _id: user._id,
-      email: user.email,
-      userName: user.userName,
-    };
 
     const twoDays = 2 * 24 * 60 * 60;
-    const token = jwt.sign(userData, process.env.JWT, { expiresIn: twoDays });
+    const token = jwt.sign(user[0].toJSON(), process.env.JWT, { expiresIn: twoDays });
     res.cookie('jwt', token, { secure: true, maxAge: twoDays * 1000 });
 
-    res.json(userData);
+    res.send(user[0]);
   } catch (err) {
     return res.status(400).send({ message: err.message });
   }
