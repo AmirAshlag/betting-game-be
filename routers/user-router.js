@@ -4,7 +4,9 @@ const userRouter = Router();
 // // const { requireAdmin } = require("../middleware/require-admin");
 // const { requireLogin } = require('../middleware/require-login');
 
-userRouter.get('/coins/:coinsId', userController.getUserByCoins);
+// users/coins/:userId
+// localhost:8080/users/coins/asdk239dhu229udh29du
+userRouter.get('/:userId', userController.getCoinsByUserId);
 userRouter.get('/', userController.getAllUsers);
 userRouter.post('/login', userController.login);
 userRouter.post('/signup', userController.signup);

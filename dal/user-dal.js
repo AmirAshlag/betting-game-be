@@ -10,12 +10,8 @@ async function getUserByEmail(email) {
   return user;
 }
 
-async function getUserByCoins(coins) {
-  const user = await User.findOne({ coins });
-}
-
-async function getUserById(userId) {
-  return User.findById(userId).select('coins');
+async function getUserByUserId(userId) {
+  return User.findById(userId).select('-password');
 }
 
 function getUsers(filter = {}) {
@@ -31,7 +27,6 @@ module.exports = {
   createUser,
   getUsers,
   getUserByEmail,
-  getUserByCoins,
-  getUserById,
+  getUserByUserId,
   updateCoins,
 };
