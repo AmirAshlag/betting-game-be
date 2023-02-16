@@ -59,4 +59,27 @@ function getGamesByDate(req,res){
       });
 }
 
-module.exports = { getGamesByDate };
+function getGameById(req, res) {
+  console.log(req.params)
+  const options = {
+    method: 'GET',
+    url: 'https://api-nba-v1.p.rapidapi.com/games',
+    params: { id: `${req.params.Id}` },
+    headers: {
+      'X-RapidAPI-Key': '9bb573e2a6msh68425984afeb9f2p16011cjsn8273c5377197',
+      'X-RapidAPI-Host': 'api-nba-v1.p.rapidapi.com',
+    },
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      console.log(req.params);
+      res.send(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+}
+
+module.exports = { getGamesByDate, getGameById };
