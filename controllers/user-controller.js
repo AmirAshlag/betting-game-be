@@ -55,7 +55,6 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userDal.getUserByEmail(email);
-    console.log(user[0]);
 
     if (!user) {
       return res.status(400).send({ message: invalidMessage });
@@ -68,9 +67,9 @@ const login = async (req, res) => {
     }
 
     const twoDays = 2 * 24 * 60 * 60;
+    console.log(user[0].toJSON());
     const token = jwt.sign(user[0].toJSON(), process.env.JWT, { expiresIn: twoDays });
-    res.cookie('jwt', token, { secure: true, maxAge: twoDays * 1000 });
-
+    res.cookie('jwt',token, { maxAge: twoDays * 1000 });
     res.send(user[0]);
   } catch (err) {
     return res.status(400).send({ message: err.message });
@@ -107,7 +106,7 @@ const userController = {
   login,
   getAllUsers,
   getUserByCoins,
-  Logout
+  Logout,
 };
 
 module.exports = userController;

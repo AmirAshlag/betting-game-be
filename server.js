@@ -1,12 +1,14 @@
 require('dotenv').config(); // loads the .env file on the project's root - later available on process.env
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const { userRouter } = require('./routers/user-router');
 const { betRouter } = require('./routers/bet-router');
 const { gameRouter } = require('./routers/game-router');
 
 const app = express();
+app.use(cookieParser());
 
 app.use(
   cors({
