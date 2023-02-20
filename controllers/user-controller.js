@@ -67,9 +67,11 @@ const login = async (req, res) => {
     }
 
     const twoDays = 2 * 24 * 60 * 60;
-    console.log(user[0].toJSON());
+    // console.log(user[0].toJSON());
     const token = jwt.sign(user[0].toJSON(), process.env.JWT, { expiresIn: twoDays });
-    res.cookie('jwt',token, { maxAge: twoDays * 1000 });
+    const decoded = jwt.decode(token)
+    console.log(decoded)
+    res.cookie('jwt',decoded, { maxAge: twoDays * 1000 });
     res.send(user[0]);
   } catch (err) {
     return res.status(400).send({ message: err.message });
