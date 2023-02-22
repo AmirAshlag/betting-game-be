@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const betDal = require('../dal/bet-dal');
 const userDal = require('../dal/user-dal');
 // const fs = require('fs');
@@ -41,9 +40,15 @@ async function getAllBets(req, res) {
   }
 }
 
+async function getAllBetsButUsers(req, res){
+  const bets = await betDal.getAllBetsButUsers(req.params.id)
+  res.send(bets)
+}
+
 const betController = {
   getAllBets,
   createNewBet,
+  getAllBetsButUsers,
 };
 
 module.exports = betController;

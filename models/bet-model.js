@@ -8,8 +8,8 @@ const UsersChoiseSchema = new mongoose.Schema({
   },
   bet: {
     winner: String,
-    overUnder: ['over', 'under'],
-    by: Number,
+    overUnder: Number,
+    ratio: Number
   },
   type: Object
 });
@@ -17,12 +17,12 @@ const UsersChoiseSchema = new mongoose.Schema({
 const UsersChoiseSchema2 = new mongoose.Schema({
   id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'users'
+    ref: 'users',
   },
   bet: {
     winner: String,
-    overUnder: ['over', 'under'],
-    by: Number,
+    overUnder: Number,
+    ratio: Number,
   },
   type: Object,
 });

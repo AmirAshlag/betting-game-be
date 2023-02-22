@@ -23,7 +23,7 @@ async function updateCoins(userId, coins) {
 }
 
 async function getUserByEmail(email){
-   return User.find({email: email});
+   return User.find({'email': { "$eq": email}});
 }
 
 module.exports = {

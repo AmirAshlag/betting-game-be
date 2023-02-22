@@ -7,32 +7,13 @@ const bcrypt = require('bcrypt');
 /**
  * @returns an error message if the user data is invalid
  */
-function validateUserData(user) {
-  try {
-    if (!user.password || !user.email || !user.userName) {
-      return 'Some fields are missing';
-    }
-
-    if (typeof user.password !== 'string') {
-      return 'Password must be a string';
-    }
-
-    if (user.password !== user.passwordRepeat) {
-      return 'Passwords do not match';
-    }
-    if (user.password.length < 6) {
-      return 'Passwords too short, minimum 6 chars';
-    }
-  } catch (err) {
-    return err.message;
-  }
-}
 
 async function signup(req, res) {
   try {
     const user = req.body;
     const isUserExist = await userDal.getUserByEmail(user.email);
-    if (isUserExist) {
+    console.log(isUserExist.length)
+    if (isUserExist.length !== 0) {
       return res.status(400).send({ message: 'Email already exist' });
     }
 
@@ -43,7 +24,8 @@ async function signup(req, res) {
       password: hashedPassword,
       userName: user.userName,
     });
-    res.json(newUser);
+    res.send(newUser);
+    console.log(newUser)
   } catch (err) {
     return res.status(400).send({ message: err.message });
   }
