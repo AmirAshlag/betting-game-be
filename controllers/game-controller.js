@@ -23,8 +23,7 @@ function getGamesByDate(req, res) {
     mm = '0' + mm;
   }
 
-  console.log(today);
-  if (Object.keys(req.params).length === 0) {
+  if (req.params.date == 'false') {
     today = yyyy + '-' + mm + '-' + dd;
   } else {
     today = new Date(req.params.date);
@@ -66,7 +65,6 @@ function getTeams(req, res) {
     url: 'https://api-nba-v1.p.rapidapi.com/teams',
     ...apiHeaders,
   };
-
   axios
     .request(options)
     .then(function (response) {
@@ -78,10 +76,14 @@ function getTeams(req, res) {
 }
 
 function getGamesByTeamId(req, res) {
+  const today = new Date();
+  const nextWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
+  const startDate = today.toISOString().slice(0, 10);
+  const endDate = nextWeek.toISOString().slice(0, 10);
   const options = {
     method: 'GET',
     url: 'https://api-nba-v1.p.rapidapi.com/games',
-    params: { season: '2022', team: req.params.teamId },
+    params: { season: '2022', team: req.params.teamId, start_date: startDate, end_date: endDate },
     ...apiHeaders,
   };
 
