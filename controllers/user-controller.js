@@ -105,6 +105,7 @@ const userController = {
   login,
   getAllUsers,
   getUserByUserId,
+  getUserByUserId,
 };
 
 module.exports = userController;

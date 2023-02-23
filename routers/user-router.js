@@ -6,7 +6,7 @@ const userRouter = Router();
 
 // users/coins/:userId
 // localhost:8080/users/coins/asdk239dhu229udh29du
-userRouter.get('/:userId', userController.getCoinsByUserId);
+userRouter.get('/:userId', userController.getUserByUserId);
 userRouter.get('/', userController.getAllUsers);
 userRouter.post('/login', userController.login);
 userRouter.post('/signup', userController.signup);
