@@ -10,9 +10,9 @@ const bcrypt = require('bcrypt');
 async function createNewBet(req, res) {
   try {
     const bet = req.body;
-    console.log(bet)
+    console.log(bet);
     // get the user's coins
-    const coins = (await userDal.getUserById(bet.userOne.id)).coins;
+    const coins = (await userDal.getUserByUserId(bet.userOne.id)).coins;
 
     // check that user have enough coins
     if (coins < bet.amount) {
@@ -40,9 +40,9 @@ async function getAllBets(req, res) {
   }
 }
 
-async function getAllBetsButUsers(req, res){
-  const bets = await betDal.getAllBetsButUsers(req.params.id)
-  res.send(bets)
+async function getAllBetsButUsers(req, res) {
+  const bets = await betDal.getAllBetsButUsers(req.params.id);
+  res.send(bets);
 }
 
 const betController = {

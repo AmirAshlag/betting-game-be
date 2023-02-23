@@ -41,7 +41,7 @@ const login = async (req, res) => {
       return res.status(400).send({ message: invalidMessage });
     }
 
-    const passwordIsValid = await bcrypt.compare(`${password}`, user[0].password);
+    const passwordIsValid = await bcrypt.compare(`${password}`, user.password);
 
     if (!passwordIsValid) {
       return res.status(400).send({ message: invalidMessage });
@@ -49,12 +49,16 @@ const login = async (req, res) => {
 
     const twoDays = 2 * 24 * 60 * 60;
     // console.log(user[0].toJSON());
-    const token = jwt.sign(user[0].toJSON(), process.env.JWT, { expiresIn: twoDays });
+    const token = jwt.sign(user.toJSON(), process.env.JWT, { expiresIn: twoDays });
     const decoded = jwt.decode(token);
     console.log(decoded);
     res.cookie('jwt', decoded, { maxAge: twoDays * 1000 });
-    res.send(user[0]);
+
+    const userData = user.toObject();
+    delete userData.password;
+    res.send(userData);
   } catch (err) {
+    console.log(err);
     return res.status(400).send({ message: err.message });
   }
 };
