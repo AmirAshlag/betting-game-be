@@ -7,26 +7,6 @@ const bcrypt = require('bcrypt');
 /**
  * @returns an error message if the user data is invalid
  */
-function validateUserData(user) {
-  try {
-    if (!user.password || !user.email || !user.userName) {
-      return 'Some fields are missing';
-    }
-
-    if (typeof user.password !== 'string') {
-      return 'Password must be a string';
-    }
-
-    if (user.password !== user.passwordRepeat) {
-      return 'Passwords do not match';
-    }
-    if (user.password.length < 6) {
-      return 'Passwords too short, minimum 6 chars';
-    }
-  } catch (err) {
-    return err.message;
-  }
-}
 
 async function signup(req, res) {
   try {
@@ -43,39 +23,37 @@ async function signup(req, res) {
       password: hashedPassword,
       userName: user.userName,
     });
-    res.json(newUser);
+    res.send(newUser);
+    console.log(newUser);
   } catch (err) {
     return res.status(400).send({ message: err.message });
   }
 }
 
 const invalidMessage = 'Invalid Email or Password';
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userDal.getUserByEmail(email);
-    console.log(user);
 
     if (!user) {
       return res.status(400).send({ message: invalidMessage });
     }
 
-    const passwordIsValid = await bcrypt.compare(password, user.password);
+    const passwordIsValid = await bcrypt.compare(`${password}`, user[0].password);
 
     if (!passwordIsValid) {
       return res.status(400).send({ message: invalidMessage });
     }
-    const userData = {
-      _id: user._id,
-      email: user.email,
-      userName: user.userName,
-    };
 
     const twoDays = 2 * 24 * 60 * 60;
-    const token = jwt.sign(userData, process.env.JWT, { expiresIn: twoDays });
-    res.cookie('jwt', token, { secure: true, maxAge: twoDays * 1000 });
-
-    res.json(userData);
+    // console.log(user[0].toJSON());
+    const token = jwt.sign(user[0].toJSON(), process.env.JWT, { expiresIn: twoDays });
+    const decoded = jwt.decode(token);
+    console.log(decoded);
+    res.cookie('jwt', decoded, { maxAge: twoDays * 1000 });
+    res.send(user[0]);
   } catch (err) {
     return res.status(400).send({ message: err.message });
   }
@@ -100,12 +78,18 @@ async function getUserByUserId(req, res) {
   }
 }
 
+function logout(req, res) {
+  res.cookie('jwt', {}, { expires: new Date(Date.now() + 1), httpOnly: true });
+  res.send({ approved: 'loggedOut' });
+  console.log('cookie deleted');
+}
+
 const userController = {
   signup,
   login,
   getAllUsers,
   getUserByUserId,
-  getUserByUserId,
+  logout,
 };
 
 module.exports = userController;

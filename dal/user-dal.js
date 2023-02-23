@@ -5,6 +5,10 @@ async function createUser(user) {
   return User.findOne({ email: user.email }).select('-password');
 }
 
+// findOne - returns Model | null (if no document was found)
+// find - returns Model[] (empty array if no documents were found)
+//      (always array)
+
 async function getUserByEmail(email) {
   const user = await User.findOne({ email });
   return user;
