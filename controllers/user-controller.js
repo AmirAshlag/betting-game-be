@@ -12,8 +12,7 @@ async function signup(req, res) {
   try {
     const user = req.body;
     const isUserExist = await userDal.getUserByEmail(user.email);
-    console.log(isUserExist.length)
-    if (isUserExist.length !== 0) {
+    if (isUserExist) {
       return res.status(400).send({ message: 'Email already exist' });
     }
 
@@ -25,7 +24,7 @@ async function signup(req, res) {
       userName: user.userName,
     });
     res.send(newUser);
-    console.log(newUser)
+    console.log(newUser);
   } catch (err) {
     return res.status(400).send({ message: err.message });
   }
@@ -42,7 +41,7 @@ const login = async (req, res) => {
       return res.status(400).send({ message: invalidMessage });
     }
 
-    const passwordIsValid = await bcrypt.compare(`${password}`, user[0].password);
+    const passwordIsValid = await bcrypt.compare(`${password}`, user.password);
 
     if (!passwordIsValid) {
       return res.status(400).send({ message: invalidMessage });
@@ -50,12 +49,16 @@ const login = async (req, res) => {
 
     const twoDays = 2 * 24 * 60 * 60;
     // console.log(user[0].toJSON());
-    const token = jwt.sign(user[0].toJSON(), process.env.JWT, { expiresIn: twoDays });
-    const decoded = jwt.decode(token)
-    console.log(decoded)
-    res.cookie('jwt',decoded, { maxAge: twoDays * 1000 });
-    res.send(user[0]);
+    const token = jwt.sign(user.toJSON(), process.env.JWT, { expiresIn: twoDays });
+    const decoded = jwt.decode(token);
+    console.log(decoded);
+    res.cookie('jwt', decoded, { maxAge: twoDays * 1000 });
+
+    const userData = user.toObject();
+    delete userData.password;
+    res.send(userData);
   } catch (err) {
+    console.log(err);
     return res.status(400).send({ message: err.message });
   }
 };
@@ -69,17 +72,17 @@ async function getAllUsers(req, res) {
   }
 }
 
-async function getUserByCoins(req, res) {
+async function getUserByUserId(req, res) {
   try {
-    const id = req.params.coinsId;
-    const user = await userDal.getUserById(id);
-    res.send(user);
+    const userId = req.params.userId;
+    const user = await userDal.getUserByUserId(userId);
+    res.json({ user });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 }
 
-function Logout(req, res) {
+function logout(req, res) {
   res.cookie('jwt', {}, { expires: new Date(Date.now() + 1), httpOnly: true });
   res.send({ approved: 'loggedOut' });
   console.log('cookie deleted');
@@ -89,8 +92,8 @@ const userController = {
   signup,
   login,
   getAllUsers,
-  getUserByCoins,
-  Logout,
+  getUserByUserId,
+  logout,
 };
 
 module.exports = userController;

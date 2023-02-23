@@ -5,12 +5,17 @@ async function createUser(user) {
   return User.findOne({ email: user.email }).select('-password');
 }
 
-async function getUserByCoins(coins) {
-  const user = await User.findOne({ coins });
+// findOne - returns Model | null (if no document was found)
+// find - returns Model[] (empty array if no documents were found)
+//      (always array)
+
+async function getUserByEmail(email) {
+  const user = await User.findOne({ email });
+  return user;
 }
 
-async function getUserById(userId) {
-  return User.findById(userId).select('coins');
+async function getUserByUserId(userId) {
+  return User.findById(userId).select('-password');
 }
 
 function getUsers(filter = {}) {
@@ -22,15 +27,10 @@ async function updateCoins(userId, coins) {
   return User.findByIdAndUpdate(userId, { coins });
 }
 
-async function getUserByEmail(email){
-   return User.find({'email': { "$eq": email}});
-}
-
 module.exports = {
   createUser,
   getUsers,
-  getUserByCoins,
-  getUserById,
-  updateCoins,
   getUserByEmail,
+  getUserByUserId,
+  updateCoins,
 };

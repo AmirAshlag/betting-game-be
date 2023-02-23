@@ -1,5 +1,12 @@
 const axios = require('axios');
 
+const apiHeaders = {
+  headers: {
+    'X-RapidAPI-Key': '9bb573e2a6msh68425984afeb9f2p16011cjsn8273c5377197',
+    'X-RapidAPI-Host': 'api-nba-v1.p.rapidapi.com',
+  },
+};
+
 function getGamesByDate(req, res) {
   console.log(req.params);
 
@@ -35,16 +42,11 @@ function getGamesByDate(req, res) {
     today = yyyy + '-' + mm + '-' + dd;
   }
 
-  const axios = require('axios');
-
   const options = {
     method: 'GET',
     url: 'https://api-nba-v1.p.rapidapi.com/games',
     params: { date: `${today}` },
-    headers: {
-      'X-RapidAPI-Key': '9bb573e2a6msh68425984afeb9f2p16011cjsn8273c5377197',
-      'X-RapidAPI-Host': 'api-nba-v1.p.rapidapi.com',
-    },
+    ...apiHeaders,
   };
 
   axios
@@ -58,16 +60,49 @@ function getGamesByDate(req, res) {
     });
 }
 
+function getTeams(req, res) {
+  const options = {
+    method: 'GET',
+    url: 'https://api-nba-v1.p.rapidapi.com/teams',
+    ...apiHeaders,
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      res.json(response.data.response);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+}
+
+function getGamesByTeamId(req, res) {
+  const options = {
+    method: 'GET',
+    url: 'https://api-nba-v1.p.rapidapi.com/games',
+    params: { season: '2022', team: req.params.teamId },
+    ...apiHeaders,
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data);
+      res.json(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+}
+
 function getGameById(req, res) {
   console.log(req.params);
   const options = {
     method: 'GET',
     url: 'https://api-nba-v1.p.rapidapi.com/games',
     params: { id: `${req.params.Id}` },
-    headers: {
-      'X-RapidAPI-Key': '9bb573e2a6msh68425984afeb9f2p16011cjsn8273c5377197',
-      'X-RapidAPI-Host': 'api-nba-v1.p.rapidapi.com',
-    },
+    ...apiHeaders,
   };
 
   axios
@@ -81,4 +116,4 @@ function getGameById(req, res) {
     });
 }
 
-module.exports = { getGamesByDate, getGameById };
+module.exports = { getGamesByDate, getGameById, getTeams, getGamesByTeamId };
