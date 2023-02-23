@@ -76,14 +76,10 @@ function getTeams(req, res) {
 }
 
 function getGamesByTeamId(req, res) {
-  const today = new Date();
-  const nextWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
-  const startDate = today.toISOString().slice(0, 10);
-  const endDate = nextWeek.toISOString().slice(0, 10);
   const options = {
     method: 'GET',
     url: 'https://api-nba-v1.p.rapidapi.com/games',
-    params: { season: '2022', team: req.params.teamId, start_date: startDate, end_date: endDate },
+    params: { season: '2022', team: req.params.teamId },
     ...apiHeaders,
   };
 
