@@ -23,8 +23,7 @@ function getGamesByDate(req, res) {
     mm = '0' + mm;
   }
 
-  console.log(today);
-  if (Object.keys(req.params).length === 0) {
+  if (req.params.date == 'false') {
     today = yyyy + '-' + mm + '-' + dd;
   } else {
     today = new Date(req.params.date);
@@ -66,7 +65,6 @@ function getTeams(req, res) {
     url: 'https://api-nba-v1.p.rapidapi.com/teams',
     ...apiHeaders,
   };
-
   axios
     .request(options)
     .then(function (response) {
