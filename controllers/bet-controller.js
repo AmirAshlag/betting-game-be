@@ -12,7 +12,7 @@ async function createNewBet(req, res) {
     const bet = req.body;
     console.log(bet)
     // get the user's coins
-    const coins = (await userDal.getUserById(bet.userOne.id)).coins;
+    const coins = (await userDal.getUserById(bet.userOne)).coins;
 
     // check that user have enough coins
     if (coins < bet.amount) {
@@ -21,7 +21,7 @@ async function createNewBet(req, res) {
     }
     // subtract the amount of coins from the user (updating the user balance)
     const updatedCoins = coins - bet.amount;
-    await userDal.updateCoins(bet.userOne.id, updatedCoins);
+    await userDal.updateCoins(bet.userOne, updatedCoins);
     // create a new bet
     const newBet = await betDal.createNewBet(bet);
     res.send(newBet);
@@ -40,6 +40,19 @@ async function getAllBets(req, res) {
   }
 }
 
+async function getBetsScroll(req, res) {
+  try {
+    const bets = await betDal.getBetsByIndexes(
+      req.params.id,
+      req.params.startIndex,
+      req.params.endIndex
+    );
+    res.send(bets);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+}
+
 async function getAllBetsButUsers(req, res){
   const bets = await betDal.getAllBetsButUsers(req.params.id)
   res.send(bets)
@@ -49,6 +62,7 @@ const betController = {
   getAllBets,
   createNewBet,
   getAllBetsButUsers,
+  getBetsScroll,
 };
 
 module.exports = betController;

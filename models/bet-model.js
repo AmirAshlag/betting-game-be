@@ -28,13 +28,6 @@ const UsersChoiseSchema2 = new mongoose.Schema({
 });
 
 const betSchema = new mongoose.Schema({
-  // _id - created by Mongo
-
-  // type
-  // amount (gova)
-  // userId
-  // betAgainstUserId // optional
-  // isFinished: boolean
 
   type: {
     // Bet.create({ ... })
@@ -50,16 +43,23 @@ const betSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  userOne: UsersChoiseSchema,
-  userTwo: UsersChoiseSchema2,
-  gameId: {
-    type: Number,
+  userOneChoise: {
+    winner: String,
+    overUnder: Number,
+    ratio: Number,
+  },
+  userOne: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'users',
     required: true,
   },
-
-  isFinished: {
-    type: Boolean,
-    default: false,
+  userTwo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'users',
+  },
+  game: {
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
   },
 });
 

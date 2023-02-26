@@ -10,12 +10,23 @@ function getBets(filter = {}) {
 }
 
 async function getAllBetsButUsers(id){
-  const bets = await Bet.find({'userOne.id': {"$ne": id}})
+  const bets = await Bet.find({'userOne': {"$ne": id}})
   return bets
+}
+
+async function getBetsByIndexes(id, startIndex, endIndex) {
+  const bets = await Bet.find({
+    userOne: { $ne: id },
+    'status.long': { $ne: 'finished' },
+  })
+    .skip(startIndex)
+    .limit(endIndex - startIndex);
+  return bets;
 }
 
 module.exports = {
   createNewBet,
   getBets,
   getAllBetsButUsers,
+  getBetsByIndexes,
 };
