@@ -58,6 +58,10 @@ async function getAllBetsButUsers(req, res){
   res.send(bets)
 }
 
+async function takeBet(req, res){
+
+}
+
 const betController = {
   getAllBets,
   createNewBet,

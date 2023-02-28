@@ -24,9 +24,14 @@ async function getBetsByIndexes(id, startIndex, endIndex) {
   return bets;
 }
 
+async function takeBet(id){
+  const bets = await Bet.findById(id).update()
+}
+
 module.exports = {
   createNewBet,
   getBets,
   getAllBetsButUsers,
   getBetsByIndexes,
+  takeBet,
 };
