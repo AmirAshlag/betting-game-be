@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt');
 async function createNewBet(req, res) {
   try {
     const bet = req.body;
-    console.log(bet)
+    console.log(bet);
     // get the user's coins
     const coins = (await userDal.getUserById(bet.userOne)).coins;
 
