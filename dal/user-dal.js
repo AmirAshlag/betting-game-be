@@ -14,7 +14,7 @@ async function getUserByEmail(email) {
   return user;
 }
 
-async function getUserByUserId(userId) {
+async function getUserById(userId) {
   return User.findById(userId).select('-password');
 }
 
@@ -31,6 +31,6 @@ module.exports = {
   createUser,
   getUsers,
   getUserByEmail,
-  getUserByUserId,
+  getUserById,
   updateCoins,
 };
