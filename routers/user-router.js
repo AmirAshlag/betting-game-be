@@ -6,7 +6,8 @@ const userRouter = Router();
 
 // users/coins/:userId
 // localhost:8080/users/coins/239dhu229udh29du
-userRouter.get('/:userId', userController.getUserByUserId);
+userRouter.get('/getUser/:userId', userController.getUserByUserId);
+// check why the route above is destroying the logout
 userRouter.get('/', userController.getAllUsers);
 userRouter.post('/login', userController.login);
 userRouter.post('/signup', userController.signup);

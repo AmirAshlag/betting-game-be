@@ -3,6 +3,7 @@ const userDal = require('../dal/user-dal');
 // const fs = require('fs');
 // const path = require('path');
 const bcrypt = require('bcrypt');
+const { ObjectId } = require('mongodb');
 
 /**
  * @returns an error message if the user data is invalid
@@ -74,18 +75,24 @@ async function getAllUsers(req, res) {
 
 async function getUserByUserId(req, res) {
   try {
-    const userId = req.params.userId;
-    const user = await userDal.getUserByUserId(userId);
-    res.json({ user });
+    const userId = `${req.params.userId}`;
+    const myObjectId = new ObjectId(userId);
+    console.log(myObjectId)
+    const user = await userDal.getUserById(myObjectId);
+    res.send(user);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 }
 
 function logout(req, res) {
-  res.cookie('jwt', {}, { expires: new Date(Date.now() + 1), httpOnly: true });
-  res.send({ approved: 'loggedOut' });
-  console.log('cookie deleted');
+  try {
+    res.cookie('jwt', {}, { expires: new Date(Date.now() + 1), httpOnly: true });
+    res.send({ approved: 'loggedOut' });
+    console.log('cookie deleted');
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 const userController = {

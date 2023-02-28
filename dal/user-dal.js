@@ -5,17 +5,13 @@ async function createUser(user) {
   return User.findOne({ email: user.email }).select('-password');
 }
 
-// findOne - returns Model | null (if no document was found)
-// find - returns Model[] (empty array if no documents were found)
-//      (always array)
-
 async function getUserByEmail(email) {
   const user = await User.findOne({ email });
   return user;
 }
 
 async function getUserById(userId) {
-  return User.findById(userId).select('-password');
+  return User.findById(userId)
 }
 
 function getUsers(filter = {}) {
@@ -23,7 +19,6 @@ function getUsers(filter = {}) {
 }
 
 async function updateCoins(userId, coins) {
-  // userId, coins -> puts the coins instead of the current user coins
   return User.findByIdAndUpdate(userId, { coins });
 }
 
@@ -31,6 +26,6 @@ module.exports = {
   createUser,
   getUsers,
   getUserByEmail,
-  getUserById,
   updateCoins,
+  getUserById,
 };

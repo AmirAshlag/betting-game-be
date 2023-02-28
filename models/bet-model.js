@@ -49,12 +49,12 @@ const betSchema = new mongoose.Schema({
     ratio: Number,
   },
   userOne: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.Mixed,
     ref: 'users',
     required: true,
   },
   userTwo: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.Mixed,
     ref: 'users',
   },
   game: {
