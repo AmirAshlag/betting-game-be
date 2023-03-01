@@ -30,12 +30,16 @@ async function takeBet(id, userTwoId) {
   return bets;
 }
 
-async function getUsersBets(id, currentDate) {
+async function getUsersOldBets(id, currentDate) {
   const bets = await Bet.find({
-    userOne: { id },
-    userTwo: { id },
-    'game.date.start': { $gt: currentDate },
+    $or: [{ userOne: id }, { userTwo: id }],
+    'game.date.start': { $lt: currentDate },
+    'game.status.long': { $ne: 'Finished' },
   });
+
+  for (let bet of bets) {
+    await bet.update({ $set: { 'game.status.long': 'Finished' } });
+  }
   return bets;
 }
 
@@ -45,5 +49,5 @@ module.exports = {
   getAllBetsButUsers,
   getBetsByIndexes,
   takeBet,
-  getUsersBets,
+  getUsersOldBets,
 };

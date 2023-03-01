@@ -21,6 +21,9 @@ function getUsers(filter = {}) {
 async function updateCoins(userId, coins) {
   return User.findByIdAndUpdate(userId, { coins });
 }
+async function addToWinner(userId, sum) {
+  return User.findByIdAndUpdate(userId, { $inc: { coins: sum } });
+}
 
 module.exports = {
   createUser,
@@ -28,4 +31,5 @@ module.exports = {
   getUserByEmail,
   updateCoins,
   getUserById,
+  addToWinner,
 };

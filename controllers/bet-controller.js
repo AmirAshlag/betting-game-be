@@ -2,7 +2,8 @@ const betDal = require('../dal/bet-dal');
 const userDal = require('../dal/user-dal');
 // const fs = require('fs');
 // const path = require('path');
-const bcrypt = require('bcrypt');
+const axios = require('axios');
+const mongoose = require('mongoose');
 
 /**
  * @returns an error message if the user data is invalid
@@ -20,7 +21,7 @@ async function createNewBet(req, res) {
       return;
     }
     // subtract the amount of coins from the user (updating the user balance)
-    const updatedCoins = coins - bet.amount;
+    const updatedCoins = coins - bet.amount * bet.userOneChoise.ratio;
     await userDal.updateCoins(bet.userOne, updatedCoins);
     // create a new bet
     const newBet = await betDal.createNewBet(bet);
@@ -61,16 +62,31 @@ async function getAllBetsButUsers(req, res) {
 }
 
 async function takeBet(req, res) {
-  console.log(req.body);
-  const bets = await betDal.takeBet(req.body.id, req.body.userTwoId);
+  const bet = req.body.bet;
+  console.log(bet);
+  // get the user's coins
+  const coins = (await userDal.getUserById(req.body.userTwoId)).coins;
+
+  if (coins < bet.amount) {
+    res.status(400).json({ message: 'Not enough coins for this amount' });
+    return;
+  }
+  const updatedCoins = coins - bet.amount;
+  await userDal.updateCoins(req.body.userTwoId, updatedCoins);
+  const bets = await betDal.takeBet(bet._id, req.body.userTwoId);
   res.send(bets);
 }
 
 async function checkBets(req, res) {
   const currentDate = new Date().toISOString();
-  // console.log(req.params.id)
-  const bets = await betDal.getUsersBets(`${req.params.id}`, currentDate);
-  console.log(bets)
+  console.log(mongoose.isValidObjectId(req.params.id));
+  const id = mongoose.Types.ObjectId(req.params.id.toString());
+  const bets = await betDal.getUsersOldBets(id, currentDate);
+  if (bets.length === 0) {
+    res.send('no updates');
+  }
+  console.log(bets);
+  // res.send(bets);
   for (let bet of bets) {
     const options = {
       method: 'GET',
@@ -84,8 +100,35 @@ async function checkBets(req, res) {
 
     axios
       .request(options)
-      .then(function (response) {
-        console.log("mydata",response.data);
+      .then(async function (response) {
+        console.log('hey', response.data.response);
+        let game = response.data.response[0];
+        console.log(game.scores);
+        if (game.scores.visitors.points > game.scores.home.points) {
+          let winner = game.teams.visitors.name;
+          if (bet.userOneChoise.winner == winner) {
+            userDal.addToWinner(bet.userOne, bet.amount);
+          } else {
+            userDal.addToWinner(bet.userTwo, bet.amount * bet.userOneChoise.ratio);
+          }
+        } else {
+          let winner = game.teams.home.name;
+          if (bet.userOneChoise.winner == winner) {
+            const updated = await userDal.addToWinner(
+              bet.userOne,
+              bet.amount + bet.amount * bet.userOneChoise.ratio
+            );
+            res.send([updated, bet.amount]);
+          } else {
+            const updated = await userDal.addToWinner(
+              bet.userTwo,
+              bet.amount * bet.userOneChoise.ratio + bet.amount
+            );
+            res.send([updated, bet.amount * bet.userOneChoise.ratio]);
+          }
+        }
+
+        // res.send(response.data.response);
       })
       .catch(function (error) {
         console.error(error);

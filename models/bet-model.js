@@ -28,7 +28,6 @@ const UsersChoiseSchema2 = new mongoose.Schema({
 });
 
 const betSchema = new mongoose.Schema({
-
   type: {
     // Bet.create({ ... })
     type: String,
@@ -49,13 +48,13 @@ const betSchema = new mongoose.Schema({
     ratio: Number,
   },
   userOne: {
-    type: mongoose.Schema.Types.Mixed,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'users',
     required: true,
   },
   userTwo: {
-    type: mongoose.Schema.Types.Mixed,
-    ref: 'users',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'users',  
   },
   game: {
     type: mongoose.Schema.Types.Mixed,
