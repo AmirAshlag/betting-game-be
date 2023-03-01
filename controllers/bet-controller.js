@@ -101,34 +101,27 @@ async function checkBets(req, res) {
     axios
       .request(options)
       .then(async function (response) {
-        console.log('hey', response.data.response);
+        // console.log(response.data.response);
         let game = response.data.response[0];
-        console.log(game.scores);
-        if (game.scores.visitors.points > game.scores.home.points) {
-          let winner = game.teams.visitors.name;
-          if (bet.userOneChoise.winner == winner) {
-            userDal.addToWinner(bet.userOne, bet.amount);
-          } else {
-            userDal.addToWinner(bet.userTwo, bet.amount * bet.userOneChoise.ratio);
-          }
-        } else {
-          let winner = game.teams.home.name;
-          if (bet.userOneChoise.winner == winner) {
-            const updated = await userDal.addToWinner(
+        game.scores.visitors.points > game.scores.home.points
+          ? bet.userOneChoise.winner == game.teams.visitors.name
+            ? userDal.addToWinner(bet.userOne, bet.amount)
+            : ((updated = await userDal.addToWinner(
+                bet.userTwo,
+                bet.amount * bet.userOneChoise.ratio
+              )),
+              res.send([updated, bet.amount * bet.userOneChoise.ratio]))
+          : bet.userOneChoise.winner == game.teams.home.name
+          ? ((updated = await userDal.addToWinner(
               bet.userOne,
               bet.amount + bet.amount * bet.userOneChoise.ratio
-            );
-            res.send([updated, bet.amount]);
-          } else {
-            const updated = await userDal.addToWinner(
+            )),
+            res.send([updated, bet.amount]))
+          : ((updated = await userDal.addToWinner(
               bet.userTwo,
               bet.amount * bet.userOneChoise.ratio + bet.amount
-            );
-            res.send([updated, bet.amount * bet.userOneChoise.ratio]);
-          }
-        }
-
-        // res.send(response.data.response);
+            )),
+            res.send([updated, bet.amount * bet.userOneChoise.ratio]));
       })
       .catch(function (error) {
         console.error(error);
