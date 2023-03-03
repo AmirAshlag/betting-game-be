@@ -95,7 +95,7 @@ function logout(req, res) {
 async function userById(req, res) {
   try {
     const user = await userDal.getUserById(req.params.id)
-    res.send(user)
+    res.send(user) 
   } catch (e) {
     console.log(e);
   }

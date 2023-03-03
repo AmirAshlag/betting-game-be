@@ -144,6 +144,12 @@ async function setWinner(req, res){
   res.send(updated)
 }
 
+async function getFutureBets(req, res){
+  const bets = await betDal.getFutureBets(req.params.id)
+  console.log(bets)
+  res.send(bets)
+}
+
 const betController = {
   getAllBets,
   createNewBet,
@@ -152,7 +158,8 @@ const betController = {
   takeBet,
   checkBets,
   getRecentBets,
-  setWinner
+  setWinner,
+  getFutureBets,
 };
 
 module.exports = betController;

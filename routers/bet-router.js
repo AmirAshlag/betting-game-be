@@ -12,5 +12,6 @@ betRouter.post('/take', betController.takeBet)
 betRouter.get('/check/:id', betController.checkBets)
 betRouter.get('/recent/:id', betController.getRecentBets);
 betRouter.post('/winner', betController.setWinner)
+betRouter.get('/future/:id', betController.getFutureBets);
 
 module.exports = { betRouter };

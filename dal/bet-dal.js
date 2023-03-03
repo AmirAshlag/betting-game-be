@@ -58,6 +58,16 @@ async function setWinner(id, gameId) {
   return updated;
 }
 
+async function getFutureBets(id){
+   const bets = await Bet.find({
+     $or: [{ userOne: id }, { userTwo: id }],
+     'game.status.long': { $ne: 'Finished' },
+   })
+     .sort({ 'game.date.start': -1 })
+     .limit(4);
+  return bets
+}
+
 module.exports = {
   createNewBet,
   getBets,
@@ -66,5 +76,6 @@ module.exports = {
   takeBet,
   getUsersOldBets,
   getMosetRecentBets,
-  setWinner
+  setWinner,
+  getFutureBets,
 };
