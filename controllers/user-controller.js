@@ -75,10 +75,7 @@ async function getAllUsers(req, res) {
 
 async function getUserByUserId(req, res) {
   try {
-    const userId = `${req.params.userId}`;
-    const myObjectId = new ObjectId(userId);
-    console.log(myObjectId)
-    const user = await userDal.getUserById(myObjectId);
+    const user = await userDal.getUserById(req.params.userId);
     res.send(user);
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -95,12 +92,22 @@ function logout(req, res) {
   }
 }
 
+async function userById(req, res) {
+  try {
+    const user = await userDal.getUserById(req.params.id)
+    res.send(user)
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 const userController = {
   signup,
   login,
   getAllUsers,
   getUserByUserId,
   logout,
+  userById
 };
 
 module.exports = userController;
