@@ -60,6 +60,10 @@ const betSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     required: true,
   },
+  winner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'users'
+  }
 });
 
 const Bet = mongoose.model('bets', betSchema);

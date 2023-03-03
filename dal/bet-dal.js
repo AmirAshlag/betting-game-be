@@ -43,6 +43,21 @@ async function getUsersOldBets(id, currentDate) {
   return bets;
 }
 
+async function getMosetRecentBets(id) {
+  const bets = Bet.find({
+    $or: [{ userOne: id }, { userTwo: id }],
+    'game.status.long': { $eq: 'Finished' },
+  })
+    .sort({ 'game.date.start': -1 })
+    .limit(4);
+  return bets
+}
+
+async function setWinner(id, gameId) {
+  const updated = await Bet.findByIdAndUpdate(gameId, { $set: { winner: id } }, { new: true });
+  return updated;
+}
+
 module.exports = {
   createNewBet,
   getBets,
@@ -50,4 +65,6 @@ module.exports = {
   getBetsByIndexes,
   takeBet,
   getUsersOldBets,
+  getMosetRecentBets,
+  setWinner
 };

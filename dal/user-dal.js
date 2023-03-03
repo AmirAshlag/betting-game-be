@@ -1,4 +1,5 @@
 const { User } = require('../models/user-model');
+const { Bet } = require('../models/bet-model');
 
 async function createUser(user) {
   await User.create(user);
@@ -11,7 +12,7 @@ async function getUserByEmail(email) {
 }
 
 async function getUserById(userId) {
-  return User.findById(userId)
+  return User.findById(userId);
 }
 
 function getUsers(filter = {}) {
@@ -21,8 +22,9 @@ function getUsers(filter = {}) {
 async function updateCoins(userId, coins) {
   return User.findByIdAndUpdate(userId, { coins });
 }
-async function addToWinner(userId, sum) {
-  return User.findByIdAndUpdate(userId, { $inc: { coins: sum } });
+async function addToWinner(userId, sum, betId) {
+  Bet.findByIdAndUpdate(betId, { $set: { winner: userId } });
+  return User.findByIdAndUpdate(userId, { $inc: { coins: sum } }); 
 }
 
 module.exports = {
@@ -33,3 +35,4 @@ module.exports = {
   getUserById,
   addToWinner,
 };
+  

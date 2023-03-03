@@ -105,21 +105,24 @@ async function checkBets(req, res) {
         let game = response.data.response[0];
         game.scores.visitors.points > game.scores.home.points
           ? bet.userOneChoise.winner == game.teams.visitors.name
-            ? userDal.addToWinner(bet.userOne, bet.amount)
+            ? userDal.addToWinner(bet.userOne, bet.amount, bet._id)
             : ((updated = await userDal.addToWinner(
                 bet.userTwo,
-                bet.amount * bet.userOneChoise.ratio
+                bet.amount * bet.userOneChoise.ratio,
+                bet._id
               )),
               res.send([updated, bet.amount * bet.userOneChoise.ratio]))
           : bet.userOneChoise.winner == game.teams.home.name
           ? ((updated = await userDal.addToWinner(
               bet.userOne,
-              bet.amount + bet.amount * bet.userOneChoise.ratio
+              bet.amount + bet.amount * bet.userOneChoise.ratio,
+              bet._id
             )),
             res.send([updated, bet.amount]))
           : ((updated = await userDal.addToWinner(
               bet.userTwo,
-              bet.amount * bet.userOneChoise.ratio + bet.amount
+              bet.amount * bet.userOneChoise.ratio + bet.amount,
+              bet._id
             )),
             res.send([updated, bet.amount * bet.userOneChoise.ratio]));
       })
@@ -129,6 +132,18 @@ async function checkBets(req, res) {
   }
 }
 
+async function getRecentBets(req, res) {
+  const bets = await betDal.getMosetRecentBets(req.params.id)
+  console.log(bets)
+  res.send(bets)
+}
+
+async function setWinner(req, res){
+  const updated = await betDal.setWinner(req.body.id, req.body.gameId)
+  console.log(updated)
+  res.send(updated)
+}
+
 const betController = {
   getAllBets,
   createNewBet,
@@ -136,6 +151,8 @@ const betController = {
   getBetsScroll,
   takeBet,
   checkBets,
+  getRecentBets,
+  setWinner
 };
 
 module.exports = betController;
