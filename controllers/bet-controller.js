@@ -87,6 +87,7 @@ async function checkBets(req, res) {
   }
   console.log(bets);
   // res.send(bets);
+  let list = [];
   for (let bet of bets) {
     const options = {
       method: 'GET',
@@ -101,30 +102,51 @@ async function checkBets(req, res) {
     axios
       .request(options)
       .then(async function (response) {
-        // console.log(response.data.response);
         let game = response.data.response[0];
-        game.scores.visitors.points > game.scores.home.points
-          ? bet.userOneChoise.winner == game.teams.visitors.name
-            ? userDal.addToWinner(bet.userOne, bet.amount, bet._id)
-            : ((updated = await userDal.addToWinner(
-                bet.userTwo,
-                bet.amount * bet.userOneChoise.ratio,
-                bet._id
-              )),
-              res.send([updated, bet.amount * bet.userOneChoise.ratio]))
-          : bet.userOneChoise.winner == game.teams.home.name
-          ? ((updated = await userDal.addToWinner(
+        if (bet.userOneChoise.winner == game.teams.home.name) {
+          if (
+            game.scores.home.points >=
+            game.scores.visitors.points + bet.userOneChoise.overUnder
+          ) {
+            const updated = await userDal.addToWinner(
               bet.userOne,
               bet.amount + bet.amount * bet.userOneChoise.ratio,
               bet._id
-            )),
-            res.send([updated, bet.amount]))
-          : ((updated = await userDal.addToWinner(
+            );
+            list.push([updated, bet.amount]);
+            // res.send([updated, bet.amount]);
+          } else {
+            const updated = await userDal.addToWinner(
               bet.userTwo,
               bet.amount * bet.userOneChoise.ratio + bet.amount,
               bet._id
-            )),
-            res.send([updated, bet.amount * bet.userOneChoise.ratio]));
+            );
+            list.push([updated, bet.amount * bet.userOneChoise.ratio]);
+            // res.send([updated, bet.amount * bet.userOneChoise.ratio]);
+          }
+        } else if (bet.userOneChoise.winner == game.teams.visitors.name) {
+          if (
+            game.scores.visitors.points >=
+            game.scores.home.points + bet.userOneChoise.overUnder
+          ) {
+            const updated = await userDal.addToWinner(bet.userOne, bet.amount, bet._id);
+            list.push([updated, bet.amount]);
+            // res.send([updated, bet.amount]);
+          } else {
+            const updated = await userDal.addToWinner(
+              bet.userTwo,
+              bet.amount * bet.userOneChoise.ratio,
+              bet._id
+            );
+            list.push([updated, bet.amount * bet.userOneChoise.ratio]);
+            // res.send([updated, bet.amount * bet.userOneChoise.ratio]);
+          }
+        } else {
+          console.error('Invalid choice for userOneChoise.winner');
+        }
+        if (list.length == bets.length) {
+          res.send(list);
+        }
       })
       .catch(function (error) {
         console.error(error);
@@ -133,21 +155,26 @@ async function checkBets(req, res) {
 }
 
 async function getRecentBets(req, res) {
-  const bets = await betDal.getMosetRecentBets(req.params.id)
-  console.log(bets)
-  res.send(bets)
+  const bets = await betDal.getMosetRecentBets(req.params.id);
+  console.log(bets);
+  res.send(bets);
 }
 
-async function setWinner(req, res){
-  const updated = await betDal.setWinner(req.body.id, req.body.gameId)
-  console.log(updated)
-  res.send(updated)
+async function setWinner(req, res) {
+  const updated = await betDal.setWinner(req.body.id, req.body.gameId);
+  console.log(updated);
+  res.send(updated);
 }
 
-async function getFutureBets(req, res){
-  const bets = await betDal.getFutureBets(req.params.id)
-  console.log(bets)
-  res.send(bets)
+async function getFutureBets(req, res) {
+  const bets = await betDal.getFutureBets(req.params.id);
+  console.log(bets);
+  res.send(bets);
+}
+
+async function getFutureTakenBets(req, res) {
+  const bets = await betDal.getFutureTakenBets(req.params.id);
+  res.send(bets);
 }
 
 const betController = {
@@ -160,6 +187,7 @@ const betController = {
   getRecentBets,
   setWinner,
   getFutureBets,
+  getFutureTakenBets,
 };
 
 module.exports = betController;

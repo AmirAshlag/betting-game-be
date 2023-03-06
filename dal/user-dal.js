@@ -23,8 +23,9 @@ async function updateCoins(userId, coins) {
   return User.findByIdAndUpdate(userId, { coins });
 }
 async function addToWinner(userId, sum, betId) {
-  Bet.findByIdAndUpdate(betId, { $set: { winner: userId } });
-  return User.findByIdAndUpdate(userId, { $inc: { coins: sum } }); 
+  const betUpdate = await Bet.findByIdAndUpdate(betId, { $set: { winner: userId } });
+  const userUpdate = await User.findByIdAndUpdate(userId, { $inc: { coins: sum } });
+  return [betUpdate, userUpdate]
 }
 
 module.exports = {

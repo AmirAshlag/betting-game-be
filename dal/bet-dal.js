@@ -38,7 +38,7 @@ async function getUsersOldBets(id, currentDate) {
   });
 
   for (let bet of bets) {
-    await bet.update({ $set: { 'game.status.long': 'Finished' } });
+    await bet.update({ $set: { 'game.status.long': 'Finished' } });  
   }
   return bets;
 }
@@ -60,11 +60,24 @@ async function setWinner(id, gameId) {
 
 async function getFutureBets(id){
    const bets = await Bet.find({
-     $or: [{ userOne: id }, { userTwo: id }],
+     userOne: id,
+     userTwo: { $exists: false },
      'game.status.long': { $ne: 'Finished' },
    })
      .sort({ 'game.date.start': -1 })
      .limit(4);
+  return bets
+}
+
+async function getFutureTakenBets(id){
+  const bets = await Bet.find({
+    $or: [
+      { userOne: id, userTwo: { $exists: true } },
+      { userTwo: id, userOne: { $exists: true } },
+    ],
+    'game.status.long': { $ne: 'Finished' },
+  })
+    .sort({ 'game.date.start': -1 })
   return bets
 }
 
@@ -78,4 +91,5 @@ module.exports = {
   getMosetRecentBets,
   setWinner,
   getFutureBets,
+  getFutureTakenBets,
 };
